@@ -1,20 +1,22 @@
-import os
 from PIL import Image
+import os
+import time
 
-def is_image_valid(image_path):
-    try:
-        with Image.open(image_path) as img:
-            img.verify()  # Kiểm tra ảnh có bị lỗi không
-        return True
-    except (IOError, SyntaxError) as e:
-        return False
+def convert_image_to_webp(input_folder):
+    file_names = [file_name for file_name in os.listdir(input_folder) if file_name.endswith(('jpg', 'jpeg', 'png', 'gif','heic'))]
+    total_files = len(file_names)
 
-def remove_invalid_images(directory):
-    for filename in os.listdir(directory):
-        file_path = os.path.join(directory, filename)
-        if os.path.isfile(file_path) and file_path.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-            if not is_image_valid(file_path):
-                print(f"Xóa ảnh lỗi: {file_path}")
-                os.remove(file_path)
+    if total_files == 0:
+        print("No image files found to process.")
+        return
 
-remove_invalid_images('Asset')
+    for index, file_name in enumerate(file_names):
+        # Xóa tệp hình ảnh
+        os.remove(os.path.join(input_folder, file_name))
+
+        # Tính toán và hiển thị tiến độ
+        progress = (index + 1) / total_files * 100
+        print(f"Progress: {progress:.2f}%")
+
+# Gọi hàm với thư mục chứa hình ảnh
+convert_image_to_webp('Asset')
